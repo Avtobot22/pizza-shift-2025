@@ -12,6 +12,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,7 +22,7 @@ import com.example.pizza_shift_intensive.pizza_list_screen.data.PizzaDataSource
 import com.example.pizza_shift_intensive.pizza_list_screen.data.PizzaListItem
 
 @Composable
-private fun Title(modifier: Modifier = Modifier) {
+fun Title(modifier: Modifier = Modifier) {
     Text(
         text = "Пицца",
         modifier = modifier.padding(start = 16.dp),
@@ -34,35 +35,34 @@ private fun Title(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PizzaScreenContent(modifier: Modifier = Modifier) {
+fun PizzaScreenContent(modifier: Modifier = Modifier, onItemClick: (pizzaId: Long) -> Unit) {
     Column(modifier = modifier.padding(5.dp)) {
         Title(modifier = modifier)
-        PizzaList(modifier = modifier.fillMaxWidth())
+        PizzaList(modifier = modifier.fillMaxWidth(), onItemClick)
     }
 }
 
 @Composable
-private fun PizzaList(modifier: Modifier = Modifier) {
+private fun PizzaList(modifier: Modifier = Modifier, onItemClick: (pizzaId: Long) -> Unit) {
     val pizzas = PizzaDataSource.pizzaItems
     LazyColumn(modifier = Modifier) {
         items(pizzas) { pizza ->
             PizzaListItem(
                 item = pizza,
-                onClick = {
-                    TODO("Handle pizza item click")
-                }
+                onClick = onItemClick
             )
         }
     }
 }
 
 @Composable
-private fun PizzaListItem(item: PizzaListItem , onClick: () -> Unit) {
+private fun PizzaListItem(item: PizzaListItem , onClick: (pizzaId: Long) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick(item.id) }
             .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             painter = painterResource(id = item.imageResId),
