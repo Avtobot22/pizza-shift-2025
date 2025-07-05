@@ -8,10 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.pizza_shift_intensive.pizza_details_screen.DetailsRoute
-import com.example.pizza_shift_intensive.pizza_details_screen.PizzaDetailsScreen
-import com.example.pizza_shift_intensive.pizza_list_screen.PizzaListRoute
-import com.example.pizza_shift_intensive.pizza_list_screen.PizzaScreenContent
+import com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails.DetailsRoute
+import com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails.PizzaDetailsScreen
+import com.example.pizza_shift_intensive.presentation.ui.screens.pizzalist.PizzaListRoute
+import com.example.pizza_shift_intensive.presentation.ui.screens.pizzalist.PizzaScreenContent
 
 
 @Composable

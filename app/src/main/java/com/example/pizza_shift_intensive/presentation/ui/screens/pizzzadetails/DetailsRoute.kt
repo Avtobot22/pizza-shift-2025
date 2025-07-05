@@ -1,4 +1,4 @@
-package com.example.pizza_shift_intensive.pizza_details_screen
+package com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails
 
 import kotlinx.serialization.Serializable
 

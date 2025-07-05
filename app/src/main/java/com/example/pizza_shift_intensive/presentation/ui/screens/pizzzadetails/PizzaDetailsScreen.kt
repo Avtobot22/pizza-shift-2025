@@ -1,6 +1,5 @@
-package com.example.pizza_shift_intensive.pizza_details_screen
+package com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails
 
-import android.icu.text.CaseMap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,19 +15,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import com.example.pizza_shift_intensive.pizza_details_screen.data.PizzaDetailsItem
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.pizza_shift_intensive.pizza_details_screen.data.PizzasPrices
-import com.example.pizza_shift_intensive.pizza_details_screen.data.getPizzaDetailsById
-import com.example.pizza_shift_intensive.pizza_list_screen.Title
+import com.example.pizza_shift_intensive.data.mock.getPizzaDetailsById
+import com.example.pizza_shift_intensive.presentation.ui.screens.pizzalist.Title
 
 
 @Composable
