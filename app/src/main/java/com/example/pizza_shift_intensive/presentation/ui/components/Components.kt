@@ -23,7 +23,7 @@ import coil.request.ImageRequest
 import com.example.pizza_shift_intensive.R
 
 @Composable
-fun Title(modifier: Modifier = Modifier, text: String = "Пицца") {
+fun Title(modifier: Modifier = Modifier, text: String = stringResource(R.string.default_title)) {
     Text(
         text = text,
         modifier = modifier.padding(start = 16.dp),
@@ -41,10 +41,10 @@ fun PizzaImage(url: String, size: Dp = 96.dp) {
         model = ImageRequest.Builder(LocalContext.current)
             .data(url)
             .crossfade(true)
-            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.ic_launcher_background)
+            .placeholder(R.drawable.loading)
+            .error(R.drawable.loading)
             .build(),
-        contentDescription = "Пицца",
+        contentDescription = "",
         modifier = Modifier
             .size(size = size)
             .padding(end = 16.dp)
@@ -66,16 +66,16 @@ fun FullScreenProgressIndicator(modifier: Modifier = Modifier) {
 
 @Composable
 fun ErrorMessage(
-    message: String = "Неизвестная ошибка",
+    message: String = stringResource(R.string.error_unknown),
     onRetry : () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = {},
-        title = { Text(text = "Произошла ошибка") },
+        title = { Text(text = stringResource(R.string.error_dialog_title)) },
         text = { Text(text = message) },
         confirmButton = {
             Button(onClick = onRetry) {
-                Text(text = "Попробуйте еще раз")
+                Text(text = stringResource(R.string.error_retry_button))
             }
         },
         modifier = Modifier,

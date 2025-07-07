@@ -38,29 +38,24 @@ val pizzaModelItems = listOf(
             SizeOptionModel(
                 type = TypeSizeModel.SMALL,
                 price = 345,
-                img = "https://example.com/images/small_size.png"
             ),
             SizeOptionModel(
                 type = TypeSizeModel.MEDIUM,
                 price = 658,
-                img = "https://example.com/images/medium_size.png"
             ),
             SizeOptionModel(
                 type = TypeSizeModel.LARGE,
                 price = 890,
-                img = "https://example.com/images/large_size.png"
             )
         ),
         doughs = listOf(
             DoughOptionModel(
                 type = TypeDoughModel.THIN,
                 price = 0,
-                img = "https://example.com/images/thin_dough.png"
             ),
             DoughOptionModel(
                 type = TypeDoughModel.THICK,
                 price = 50,
-                img = "https://example.com/images/traditional_dough.png"
             )
         ),
         calories = 750,
@@ -108,29 +103,24 @@ val pizzaModelItems = listOf(
             SizeOptionModel(
                 type = TypeSizeModel.SMALL,
                 price = 324,
-                img = "https://example.com/images/small_size.png"
             ),
             SizeOptionModel(
                 type = TypeSizeModel.MEDIUM,
                 price = 456,
-                img = "https://example.com/images/medium_size.png"
             ),
             SizeOptionModel(
                 type = TypeSizeModel.LARGE,
                 price = 679,
-                img = "https://example.com/images/large_size.png"
             )
         ),
         doughs = listOf(
             DoughOptionModel(
                 type = TypeDoughModel.THIN,
                 price = 0,
-                img = "https://example.com/images/thin_dough.png"
             ),
             DoughOptionModel(
                 type = TypeDoughModel.THICK,
                 price = 50,
-                img = "https://example.com/images/traditional_dough.png"
             )
         ),
         calories = 820,
@@ -183,29 +173,24 @@ val pizzaModelItems = listOf(
             SizeOptionModel(
                 type = TypeSizeModel.SMALL,
                 price = 234,
-                img = "https://example.com/images/small_size.png"
             ),
             SizeOptionModel(
                 type = TypeSizeModel.MEDIUM,
                 price = 453,
-                img = "https://example.com/images/medium_size.png"
             ),
             SizeOptionModel(
                 type = TypeSizeModel.LARGE,
                 price = 567,
-                img = "https://example.com/images/large_size.png"
             )
         ),
         doughs = listOf(
             DoughOptionModel(
                 type = TypeDoughModel.THIN,
                 price = 0,
-                img = "https://example.com/images/thin_dough.png"
             ),
             DoughOptionModel(
                 type = TypeDoughModel.THICK,
                 price = 50,
-                img = "https://example.com/images/traditional_dough.png"
             )
         ),
         calories = 680,

@@ -13,25 +13,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import com.example.pizza_shift_intensive.pizza_details_screen.data.PizzaDetailsItem
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.pizza_shift_intensive.pizza_details_screen.data.PizzasPrices
-import com.example.pizza_shift_intensive.data.mock.getPizzaDetailsById
-import com.example.pizza_shift_intensive.presentation.ui.screens.pizzalist.Title
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pizza_shift_intensive.presentation.model.PizzaDetailsUiModel
+import com.example.pizza_shift_intensive.presentation.model.SizesUiModel
+import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
+import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
+import com.example.pizza_shift_intensive.presentation.ui.components.PizzaImage
+import com.example.pizza_shift_intensive.presentation.ui.components.Title
+
 
 
 @Composable
-fun PizzaDetailsScreen(modifier: Modifier = Modifier, id: Long) {
-    val pizza: PizzaDetailsItem? = getPizzaDetailsById(id)
+fun PizzaDetailsScreen() {
+    TODO()
+}
 
+@Composable
+private fun PizzaDetailsContent(pizza: PizzaDetailsUiModel, onSizeSelected: (SizesUiModel) -> Unit) {
     Title(modifier = Modifier.padding(bottom = 16.dp))
 
     Column(
@@ -41,28 +45,10 @@ fun PizzaDetailsScreen(modifier: Modifier = Modifier, id: Long) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        if (pizza == null) {
-            Text(
-                text = "Пицца не найдена",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-            return
-        }
-
-        var currentSize by rememberSaveable { mutableStateOf(pizza.selectedSize) }
-        val currentPizza = pizza.copy(selectedSize = currentSize)
-
-        Image(
-            painter = painterResource(id = currentPizza.imageResId),
-            contentDescription = currentPizza.name,
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .size(160.dp)
-        )
+        PizzaImage(pizza.img, size = 160.dp)
 
         Text(
-            text = currentPizza.name,
+            text = pizza.name,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -75,18 +61,18 @@ fun PizzaDetailsScreen(modifier: Modifier = Modifier, id: Long) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${currentPizza.selectedSize.diameter} см, традиционное тесто",
+                text = "${pizza.selectedSize.diameter} см, ${pizza.selectedDough.type}",
                 style = MaterialTheme.typography.bodySmall,
             )
             Text(
-                text = "${currentPizza.finalPrice} ₽",
+                text = "${pizza.price} ₽",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
         }
 
         Text(
-            text = "Состав: ${currentPizza.ingredients.joinToString(", ")}",
+            text = "Состав: ${pizza.ingredients}",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,54 +88,36 @@ fun PizzaDetailsScreen(modifier: Modifier = Modifier, id: Long) {
                 .padding(bottom = 8.dp)
         )
 
-        PizzaSizeSelector(
-            pizza = currentPizza,
-            onSizeSelected = { size ->
-                currentSize = size
-            },
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+        PizzaSizeSelector(pizza, onSizeSelected = onSizeSelected)
+
     }
 }
 
 @Composable
 private fun PizzaSizeSelector(
-    pizza: PizzaDetailsItem,
-    onSizeSelected: (PizzasPrices) -> Unit,
-    modifier: Modifier = Modifier
+    pizza: PizzaDetailsUiModel,
+    onSizeSelected: (SizesUiModel) -> Unit
 ) {
-    val sizes = PizzasPrices.entries.toTypedArray()
-
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        sizes.forEach { size ->
+        pizza.sizes.forEach { size ->
             val isSelected = pizza.selectedSize == size
-            val selectedColor = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-            val selectedContentColor = if (isSelected) {
-                MaterialTheme.colorScheme.onPrimary
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            }
             TextButton(
                 onClick = { onSizeSelected(size) },
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.textButtonColors(
-                    containerColor = selectedColor,
-                    contentColor = selectedContentColor
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                    contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                 )
             ) {
-                Text(text = size.displayName)
+                Text(text = size.type)
             }
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package com.example.pizza_shift_intensive.main_screen
+package com.example.pizza_shift_intensive
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -7,11 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails.DetailsRoute
 import com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails.PizzaDetailsScreen
 import com.example.pizza_shift_intensive.presentation.ui.screens.pizzalist.PizzaListRoute
-import com.example.pizza_shift_intensive.presentation.ui.screens.pizzalist.PizzaScreenContent
+import com.example.pizza_shift_intensive.presentation.ui.screens.pizzalist.PizzaListScreen
 
 
 @Composable
@@ -25,17 +24,14 @@ fun MyApp(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable<PizzaListRoute> {
-                PizzaScreenContent(
-                    onItemClick = { pizzaId ->
-                        navigationController.navigate(DetailsRoute(pizzaId))
+                PizzaListScreen(
+                    onPizzaClick = { pizzaId ->
+                        navigationController.navigate(DetailsRoute(pizzaId = pizzaId))
                     }
                 )
             }
             composable<DetailsRoute> {
-                val destination = it.toRoute<DetailsRoute>()
-                PizzaDetailsScreen(
-                    id = destination.pizzaId
-                )
+                PizzaDetailsScreen()
             }
         }
     }

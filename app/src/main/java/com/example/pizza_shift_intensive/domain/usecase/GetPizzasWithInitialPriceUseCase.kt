@@ -9,7 +9,7 @@ class GetPizzasWithInitialPriceUseCase(
     suspend operator fun invoke(): List<Pair<PizzaModel, Int>> {
         val pizzas = getPizzasUseCase()
         return pizzas.map { pizza ->
-            val price = getInitialPizzaPriceUseCase.execute(pizza)
+            val price = getInitialPizzaPriceUseCase(pizza)
             pizza to price
         }
     }

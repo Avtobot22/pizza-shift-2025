@@ -13,49 +13,75 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pizza_shift_intensive.data.api.NetworkModule
+import com.example.pizza_shift_intensive.data.repository.PizzaRepository
+import com.example.pizza_shift_intensive.data.repository.PizzaRepositoryImpl
+import com.example.pizza_shift_intensive.domain.usecase.GetInitialPizzaPriceUseCase
+import com.example.pizza_shift_intensive.domain.usecase.GetPizzasUseCase
+import com.example.pizza_shift_intensive.domain.usecase.GetPizzasWithInitialPriceUseCase
+import com.example.pizza_shift_intensive.presentation.mappers.toUiModel
 import com.example.pizza_shift_intensive.presentation.model.PizzaUiModel
 import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
 import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
 import com.example.pizza_shift_intensive.presentation.ui.components.PizzaImage
 import com.example.pizza_shift_intensive.presentation.ui.components.Title
-import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaListViewModel
+import com.example.pizza_shift_intensive.presentation.viewmodel.pizzalist.PizzaListUiState
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun PizzaListScreen(
-    viewModel: PizzaListViewModel = viewModel(),
     onPizzaClick: (pizzaId: String) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    var state: PizzaListUiState by remember { mutableStateOf(PizzaListUiState.Loading) }
+    val coroutineScope = rememberCoroutineScope()
 
-    when {
-        uiState.isLoading -> {
-            FullScreenProgressIndicator()
-        }
-        uiState.errorMessage != null -> {
-            ErrorMessage(
-                message = uiState.errorMessage ?: "Неизвестная ошибка",
-                onRetry = { viewModel.loadPizzas() }
-            )
-        }
-        else -> {
-            PizzaListContent(pizzaUiModels = uiState.pizzaUiModelList, onPizzaClick = onPizzaClick)
+    LaunchedEffect(key1 = Unit) {
+        state = PizzaListUiState.Loading
+        try {
+            val pizzas = getPizzasList()
+            state = PizzaListUiState.Content(pizzas = pizzas)
+        } catch (e: Exception) {
+            state = PizzaListUiState.Error(message = e.message.orEmpty())
         }
     }
-}
 
-@Composable
-fun PizzaListContent(pizzaUiModels: List<PizzaUiModel>, onPizzaClick: (String) -> Unit) {
     Column(modifier = Modifier.padding(5.dp)) {
         Title()
 
-        PizzaList(pizzaUiModels, onPizzaClick)
+        when (val currentState = state) {
+            PizzaListUiState.Loading -> FullScreenProgressIndicator()
+
+            is PizzaListUiState.Content -> PizzaList(
+                pizzaUiModels = currentState.pizzas,
+                onPizzaClick = onPizzaClick
+            )
+
+            is PizzaListUiState.Error -> ErrorMessage(
+                message = currentState.message,
+                onRetry = {
+                    coroutineScope.launch {
+                        state = PizzaListUiState.Loading
+                        try {
+                            val pizzas = getPizzasList()
+                            state = PizzaListUiState.Content(pizzas = pizzas)
+                        } catch (e: Exception) {
+                            state = PizzaListUiState.Error(message = e.message.orEmpty())
+                        }
+                    }
+                }
+            )
+        }
     }
 }
+
 
 @Composable
 private fun PizzaList(pizzaUiModels: List<PizzaUiModel>, onPizzaClick: (String) -> Unit) {
@@ -77,24 +103,46 @@ private fun PizzaListItem(pizzaUiModel: PizzaUiModel, onClick: (String) -> Unit)
     ) {
         PizzaImage(pizzaUiModel.img)
 
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = pizzaUiModel.name,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+        PizzaDetails(pizzaUiModel = pizzaUiModel, modifier = Modifier.weight(1f))
+    }
+}
 
-            Text(
-                text = pizzaUiModel.description,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
+@Composable
+private fun PizzaDetails(pizzaUiModel: PizzaUiModel, modifier: Modifier = Modifier) {
+    Column {
+        Text(
+            text = pizzaUiModel.name,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
 
-            Text(
-                text = "от ${pizzaUiModel.price} ₽",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+        Text(
+            text = pizzaUiModel.description,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+
+        Text(
+            text = "от ${pizzaUiModel.price} ₽",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+private suspend fun getPizzasList(): List<PizzaUiModel> {
+    val pizzaRepository: PizzaRepository = PizzaRepositoryImpl(
+        NetworkModule.pizzaApi,
+        NetworkModule.pizzaConverter
+    )
+
+    val pizzasWithPrices = GetPizzasWithInitialPriceUseCase(
+        getPizzasUseCase = GetPizzasUseCase(
+            pizzaRepository
+        ), getInitialPizzaPriceUseCase = GetInitialPizzaPriceUseCase()
+    )()
+
+    return pizzasWithPrices.map { (pizzaModel, price) ->
+        pizzaModel.toUiModel(price)
     }
 }

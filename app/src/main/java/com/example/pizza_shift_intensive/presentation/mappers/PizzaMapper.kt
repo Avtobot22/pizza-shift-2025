@@ -7,21 +7,7 @@ fun PizzaModel.toUiModel(price: Int): PizzaUiModel {
     return PizzaUiModel(
         id = this.id,
         name = this.name,
-        ingredients = this.ingredients,
-        toppings = this.toppings,
         description = this.description,
-        sizes = this.sizes,
-        doughs = this.doughs,
-        calories = this.calories,
-        protein = this.protein,
-        totalFat = this.totalFat,
-        carbohydrates = this.carbohydrates,
-        sodium = this.sodium,
-        allergens = this.allergens,
-        isVegetarian = this.isVegetarian,
-        isGlutenFree = this.isGlutenFree,
-        isNew = this.isNew,
-        isHit = this.isHit,
         img = this.img,
         price = price
     )

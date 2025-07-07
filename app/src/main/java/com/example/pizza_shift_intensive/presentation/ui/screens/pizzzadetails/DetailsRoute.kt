@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DetailsRoute(
-    val pizzaId: Long,
+    val pizzaId: String,
 )
