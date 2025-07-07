@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Pizza_shift_intensive</string>
+
+    <string name="default_title">Пицца</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="error_dialog_title">Произошла ошибка</string>
+    <string name="error_retry_button">Попробуйте еще раз</string>
 </resources>
