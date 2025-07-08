@@ -1,8 +1,7 @@
 package com.example.pizza_shift_intensive.data.repository
 
 import com.example.pizza_shift_intensive.data.api.PizzaApi
-import com.example.pizza_shift_intensive.data.api.PizzaCatalogConverter
-import com.example.pizza_shift_intensive.data.mock.PizzaDataSource
+import com.example.pizza_shift_intensive.data.converter.PizzaCatalogConverter
 import com.example.pizza_shift_intensive.domain.model.PizzaModel
 
 
@@ -21,6 +20,12 @@ class PizzaRepositoryImpl(
     }
 
     override suspend fun getPizzaDetails(pizzaId: String): PizzaModel? {
-        TODO()
+        return try {
+            val response = pizzaApi.getPizzas()
+            pizzaCatalogConverter.convert(response)
+                .firstOrNull { it.id == pizzaId }
+        } catch (e: Exception) {
+            null
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.pizza_shift_intensive.presentation.viewmodel.pizzalist
+package com.example.pizza_shift_intensive.presentation.viewmodel
 
 import com.example.pizza_shift_intensive.presentation.model.PizzaUiModel
 
