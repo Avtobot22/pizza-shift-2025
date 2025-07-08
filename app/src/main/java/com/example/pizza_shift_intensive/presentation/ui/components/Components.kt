@@ -37,14 +37,21 @@ fun Title(modifier: Modifier = Modifier, text: String = stringResource(R.string.
 
 @Composable
 fun PizzaImage(url: String, size: Dp = 96.dp) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(url)
-            .crossfade(true)
-            .placeholder(R.drawable.loading)
-            .error(R.drawable.loading)
-            .build(),
+    coil.compose.SubcomposeAsyncImage(
+        model = url,
         contentDescription = "",
+        loading = {
+            CircularProgressIndicator(
+                strokeWidth = 2.dp,
+                modifier = Modifier.size(24.dp)
+            )
+        },
+        error = {
+            CircularProgressIndicator(
+                strokeWidth = 2.dp,
+                modifier = Modifier.size(24.dp)
+            )
+        },
         modifier = Modifier
             .size(size = size)
             .padding(end = 16.dp)
