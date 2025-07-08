@@ -38,28 +38,30 @@ fun PizzaListScreen(
             onRetry = { pizzaViewModel.getPizzas() }
         )
         is PizzaListUiState.Content -> {
-            PizzaList(currentState.pizzas, onPizzaClick)
+            PizzaList(currentState.pizzas, onPizzaClick, pizzaViewModel)
         }
-
     }
 }
 
 
 @Composable
-private fun PizzaList(pizzaUiModels: List<PizzaUiModel>, onPizzaClick: (String) -> Unit) {
+private fun PizzaList(pizzaUiModels: List<PizzaUiModel>, onPizzaClick: (String) -> Unit, pizzaViewModel: PizzaViewModel) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(pizzaUiModels) { pizza ->
-            PizzaListItem(pizzaUiModel = pizza, onClick = onPizzaClick)
+            PizzaListItem(pizzaUiModel = pizza, onClick = onPizzaClick, pizzaViewModel)
         }
     }
 }
 
 @Composable
-private fun PizzaListItem(pizzaUiModel: PizzaUiModel, onClick: (String) -> Unit) {
+private fun PizzaListItem(pizzaUiModel: PizzaUiModel, onClick: (String) -> Unit, pizzaViewModel: PizzaViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick(pizzaUiModel.id) }
+            .clickable {
+                onClick(pizzaUiModel.id)
+                pizzaViewModel.getPizzaDetails(pizzaUiModel.id)
+            }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

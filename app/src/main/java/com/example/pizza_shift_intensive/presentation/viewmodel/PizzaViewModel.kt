@@ -24,7 +24,7 @@ class PizzaViewModel(
     val pizzaListUiState: LiveData<PizzaListUiState> = _pizzaListUiState
 
     private val _pizzaDetailsUiState = MutableLiveData<PizzaDetailsUiState>(
-        PizzaDetailsUiState.isLoading
+        PizzaDetailsUiState.Loading
     )
     val pizzaDetailsUiState: LiveData<PizzaDetailsUiState> = _pizzaDetailsUiState
 
@@ -44,7 +44,7 @@ class PizzaViewModel(
     }
 
     fun getPizzaDetails(pizzaId: String) {
-        _pizzaDetailsUiState.value = PizzaDetailsUiState.isLoading
+        _pizzaDetailsUiState.value = PizzaDetailsUiState.Loading
         val handler = CoroutineExceptionHandler { _, exception ->
             Log.e("PizzaViewModel", exception.message.toString())
             _pizzaDetailsUiState.value = PizzaDetailsUiState.Error(exception.message ?: "Неизвестная ошибка")

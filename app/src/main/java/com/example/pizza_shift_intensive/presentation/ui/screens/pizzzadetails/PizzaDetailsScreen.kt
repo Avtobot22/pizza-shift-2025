@@ -1,41 +1,61 @@
 package com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pizza_shift_intensive.presentation.model.PizzaDetailsUiModel
 import com.example.pizza_shift_intensive.presentation.model.SizesUiModel
 import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
 import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
 import com.example.pizza_shift_intensive.presentation.ui.components.PizzaImage
 import com.example.pizza_shift_intensive.presentation.ui.components.Title
-
+import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaDetailsUiState
+import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaViewModel
 
 
 @Composable
-fun PizzaDetailsScreen() {
-    TODO()
+fun PizzaDetailsScreen(
+    pizzaViewModel: PizzaViewModel,
+    pizzaId: String
+) {
+    val pizzaDetailsUiState by pizzaViewModel.pizzaDetailsUiState.observeAsState(PizzaDetailsUiState.Loading)
+
+    when (val currentState = pizzaDetailsUiState) {
+        is PizzaDetailsUiState.Loading -> FullScreenProgressIndicator()
+        is PizzaDetailsUiState.Error -> ErrorMessage(
+            message = currentState.message,
+            onRetry = { pizzaViewModel.getPizzaDetails(pizzaId) }
+        )
+
+        is PizzaDetailsUiState.Content -> {
+            PizzaDetailsContent(
+                pizza = currentState.pizzaDetails,
+                onSizeSelected = { TODO("Изменение размера пиццы") }
+            )
+        }
+    }
+
 }
 
 @Composable
-private fun PizzaDetailsContent(pizza: PizzaDetailsUiModel, onSizeSelected: (SizesUiModel) -> Unit) {
+private fun PizzaDetailsContent(
+    pizza: PizzaDetailsUiModel,
+    onSizeSelected: (SizesUiModel) -> Unit
+) {
     Title(modifier = Modifier.padding(bottom = 16.dp))
 
     Column(
