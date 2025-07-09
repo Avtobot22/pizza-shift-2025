@@ -20,27 +20,26 @@ import androidx.compose.ui.Alignment
 import com.example.pizza_shift_intensive.presentation.model.PizzaUiModel
 import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
 import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
-import com.example.pizza_shift_intensive.presentation.ui.components.PizzaImage
-import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaListUiState
-import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaViewModel
+import com.example.pizza_shift_intensive.presentation.ui.components.ItemImage
+import com.example.pizza_shift_intensive.presentation.viewmodel.pizzalist.PizzaListUiState
+import com.example.pizza_shift_intensive.presentation.viewmodel.pizzalist.PizzaListViewModel
 
 
 @Composable
 fun PizzaListScreen(
-    pizzaViewModel: PizzaViewModel,
+    pizzaListViewModel: PizzaListViewModel,
     onPizzaClick: (pizzaId: String) -> Unit
 ) {
-    val pizzaListUiState by pizzaViewModel.pizzaListUiState.observeAsState(PizzaListUiState.Loading)
+    val pizzaListUiState by pizzaListViewModel.pizzaListUiState.observeAsState(PizzaListUiState.Loading)
 
     when (val currentState = pizzaListUiState) {
         is PizzaListUiState.Loading -> FullScreenProgressIndicator()
         is PizzaListUiState.Error -> ErrorMessage(message = currentState.message,
-            onRetry = { pizzaViewModel.getPizzas() }
+            onRetry = { pizzaListViewModel.getPizzas() }
         )
         is PizzaListUiState.Content -> {
             PizzaList(currentState.pizzas, onPizzaClick)
         }
-
     }
 }
 
@@ -59,11 +58,13 @@ private fun PizzaListItem(pizzaUiModel: PizzaUiModel, onClick: (String) -> Unit)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick(pizzaUiModel.id) }
+            .clickable {
+                onClick(pizzaUiModel.id)
+            }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        PizzaImage(pizzaUiModel.img)
+        ItemImage(pizzaUiModel.img)
 
         PizzaDetails(pizzaUiModel = pizzaUiModel, modifier = Modifier.weight(1f))
     }

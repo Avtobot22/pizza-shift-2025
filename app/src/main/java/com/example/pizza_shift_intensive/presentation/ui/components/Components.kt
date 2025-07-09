@@ -12,14 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil.compose.SubcomposeAsyncImage
 import com.example.pizza_shift_intensive.R
 
 @Composable
@@ -36,8 +34,8 @@ fun Title(modifier: Modifier = Modifier, text: String = stringResource(R.string.
 }
 
 @Composable
-fun PizzaImage(url: String, size: Dp = 96.dp) {
-    coil.compose.SubcomposeAsyncImage(
+fun ItemImage(url: String, size: Dp = 96.dp) {
+    SubcomposeAsyncImage(
         model = url,
         contentDescription = "",
         loading = {

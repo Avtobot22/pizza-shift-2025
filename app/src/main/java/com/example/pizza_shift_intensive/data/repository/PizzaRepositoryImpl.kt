@@ -11,21 +11,13 @@ class PizzaRepositoryImpl(
 ) : PizzaRepository {
 
     override suspend fun getPizzas(): List<PizzaModel> {
-        return try {
-            val response = pizzaApi.getPizzas()
-            pizzaCatalogConverter.convert(response)
-        } catch (e: Exception) {
-            emptyList()
-        }
+        val response = pizzaApi.getPizzas()
+        return pizzaCatalogConverter.convert(response)
     }
 
     override suspend fun getPizzaDetails(pizzaId: String): PizzaModel? {
-        return try {
-            val response = pizzaApi.getPizzas()
-            pizzaCatalogConverter.convert(response)
-                .firstOrNull { it.id == pizzaId }
-        } catch (e: Exception) {
-            null
-        }
+        val response = pizzaApi.getPizzas()
+        return pizzaCatalogConverter.convert(response)
+            .firstOrNull { it.id == pizzaId }
     }
 }

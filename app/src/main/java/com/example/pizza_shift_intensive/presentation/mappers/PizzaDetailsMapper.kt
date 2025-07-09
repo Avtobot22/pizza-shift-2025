@@ -10,7 +10,7 @@ fun PizzaModel.toDetailsUiModel(price: Int): PizzaDetailsUiModel {
         name = this.name,
         description = this.description,
         ingredients = formatterIngredients(this.ingredients),
-        toppings = this.toppings.map { it.toUiModel() },
+        toppings = this.toppings.map { it.toUiModel(::formatFirstLetter) },
         doughs = this.doughs.map { it.toUiModel() },
         sizes = this.sizes.map { it.toUiModel() },
         img = this.img,

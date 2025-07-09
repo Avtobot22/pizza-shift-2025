@@ -49,3 +49,6 @@ fun formatDiameter(type: TypeSizeModel): Int {
         TypeSizeModel.LARGE -> 35
     }
 }
+fun formatFirstLetter(text: String): String {
+    return text.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+}
