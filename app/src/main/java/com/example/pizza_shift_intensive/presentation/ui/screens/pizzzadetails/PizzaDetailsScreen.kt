@@ -21,7 +21,7 @@ import com.example.pizza_shift_intensive.presentation.model.PizzaDetailsUiModel
 import com.example.pizza_shift_intensive.presentation.model.SizesUiModel
 import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
 import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
-import com.example.pizza_shift_intensive.presentation.ui.components.PizzaImage
+import com.example.pizza_shift_intensive.presentation.ui.components.ItemImage
 import com.example.pizza_shift_intensive.presentation.ui.components.Title
 import com.example.pizza_shift_intensive.presentation.viewmodel.pizzadetails.PizzaDetailsUiState
 import com.example.pizza_shift_intensive.presentation.viewmodel.pizzadetails.PizzaDetailsViewModel
@@ -32,7 +32,9 @@ fun PizzaDetailsScreen(
     pizzaDetailsViewModel: PizzaDetailsViewModel,
     pizzaId: String
 ) {
-    val pizzaDetailsUiState by pizzaDetailsViewModel.pizzaDetailsUiState.observeAsState(PizzaDetailsUiState.Loading)
+    val pizzaDetailsUiState by pizzaDetailsViewModel.pizzaDetailsUiState.observeAsState(
+        PizzaDetailsUiState.Loading
+    )
 
     when (val currentState = pizzaDetailsUiState) {
         is PizzaDetailsUiState.Loading -> FullScreenProgressIndicator()
@@ -44,7 +46,11 @@ fun PizzaDetailsScreen(
         is PizzaDetailsUiState.Content -> {
             PizzaDetailsContent(
                 pizza = currentState.pizzaDetails,
-                onSizeSelected = { TODO("Изменение размера пиццы") }
+                onSizeSelected = { selectedSize ->
+                    pizzaDetailsViewModel.setSelectedSize(
+                        selectedSize
+                    )
+                }
             )
         }
     }
@@ -65,7 +71,7 @@ private fun PizzaDetailsContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        PizzaImage(pizza.img, size = 160.dp)
+        ItemImage(pizza.img, size = 160.dp)
 
         Text(
             text = pizza.name,

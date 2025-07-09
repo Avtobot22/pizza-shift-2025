@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import com.example.pizza_shift_intensive.presentation.model.PizzaUiModel
 import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
 import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
-import com.example.pizza_shift_intensive.presentation.ui.components.PizzaImage
+import com.example.pizza_shift_intensive.presentation.ui.components.ItemImage
 import com.example.pizza_shift_intensive.presentation.viewmodel.pizzalist.PizzaListUiState
 import com.example.pizza_shift_intensive.presentation.viewmodel.pizzalist.PizzaListViewModel
 
@@ -64,7 +64,7 @@ private fun PizzaListItem(pizzaUiModel: PizzaUiModel, onClick: (String) -> Unit)
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        PizzaImage(pizzaUiModel.img)
+        ItemImage(pizzaUiModel.img)
 
         PizzaDetails(pizzaUiModel = pizzaUiModel, modifier = Modifier.weight(1f))
     }

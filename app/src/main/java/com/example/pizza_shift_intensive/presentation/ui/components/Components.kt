@@ -34,7 +34,7 @@ fun Title(modifier: Modifier = Modifier, text: String = stringResource(R.string.
 }
 
 @Composable
-fun PizzaImage(url: String, size: Dp = 96.dp) {
+fun ItemImage(url: String, size: Dp = 96.dp) {
     SubcomposeAsyncImage(
         model = url,
         contentDescription = "",
