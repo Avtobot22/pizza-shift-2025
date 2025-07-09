@@ -7,9 +7,9 @@ import com.example.pizza_shift_intensive.presentation.model.ComponentUiModel
 import com.example.pizza_shift_intensive.presentation.model.DoughUiModel
 import com.example.pizza_shift_intensive.presentation.model.SizesUiModel
 
-fun ComponentModel.toUiModel(): ComponentUiModel {
+fun ComponentModel.toUiModel(formatComponent: (String) -> String = { it }): ComponentUiModel {
     return ComponentUiModel(
-        type = typeToString(this.type),
+        type = formatComponent(typeToString(this.type)),
         img = this.img,
         price = this.price
     )
