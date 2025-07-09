@@ -21,46 +21,45 @@ import com.example.pizza_shift_intensive.presentation.model.PizzaUiModel
 import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
 import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
 import com.example.pizza_shift_intensive.presentation.ui.components.PizzaImage
-import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaListUiState
-import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaViewModel
+import com.example.pizza_shift_intensive.presentation.viewmodel.pizzalist.PizzaListUiState
+import com.example.pizza_shift_intensive.presentation.viewmodel.pizzalist.PizzaListViewModel
 
 
 @Composable
 fun PizzaListScreen(
-    pizzaViewModel: PizzaViewModel,
+    pizzaListViewModel: PizzaListViewModel,
     onPizzaClick: (pizzaId: String) -> Unit
 ) {
-    val pizzaListUiState by pizzaViewModel.pizzaListUiState.observeAsState(PizzaListUiState.Loading)
+    val pizzaListUiState by pizzaListViewModel.pizzaListUiState.observeAsState(PizzaListUiState.Loading)
 
     when (val currentState = pizzaListUiState) {
         is PizzaListUiState.Loading -> FullScreenProgressIndicator()
         is PizzaListUiState.Error -> ErrorMessage(message = currentState.message,
-            onRetry = { pizzaViewModel.getPizzas() }
+            onRetry = { pizzaListViewModel.getPizzas() }
         )
         is PizzaListUiState.Content -> {
-            PizzaList(currentState.pizzas, onPizzaClick, pizzaViewModel)
+            PizzaList(currentState.pizzas, onPizzaClick)
         }
     }
 }
 
 
 @Composable
-private fun PizzaList(pizzaUiModels: List<PizzaUiModel>, onPizzaClick: (String) -> Unit, pizzaViewModel: PizzaViewModel) {
+private fun PizzaList(pizzaUiModels: List<PizzaUiModel>, onPizzaClick: (String) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(pizzaUiModels) { pizza ->
-            PizzaListItem(pizzaUiModel = pizza, onClick = onPizzaClick, pizzaViewModel)
+            PizzaListItem(pizzaUiModel = pizza, onClick = onPizzaClick)
         }
     }
 }
 
 @Composable
-private fun PizzaListItem(pizzaUiModel: PizzaUiModel, onClick: (String) -> Unit, pizzaViewModel: PizzaViewModel) {
+private fun PizzaListItem(pizzaUiModel: PizzaUiModel, onClick: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 onClick(pizzaUiModel.id)
-                pizzaViewModel.getPizzaDetails(pizzaUiModel.id)
             }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,

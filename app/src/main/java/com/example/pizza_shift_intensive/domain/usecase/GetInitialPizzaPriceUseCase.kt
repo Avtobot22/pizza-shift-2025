@@ -7,12 +7,6 @@ class GetInitialPizzaPriceUseCase(
 ) {
 
     operator fun invoke(pizza: PizzaModel): Int {
-        for (strategy in strategies) {
-            val price = strategy.findInitialPrice(pizza)
-            if (price != null) {
-                return price
-            }
-        }
-        return 0
+    return strategies.firstNotNullOfOrNull { it.findInitialPrice(pizza) }?: 0
     }
 }

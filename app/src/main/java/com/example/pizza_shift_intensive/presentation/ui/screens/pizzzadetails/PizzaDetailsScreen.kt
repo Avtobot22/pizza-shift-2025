@@ -23,22 +23,22 @@ import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
 import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
 import com.example.pizza_shift_intensive.presentation.ui.components.PizzaImage
 import com.example.pizza_shift_intensive.presentation.ui.components.Title
-import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaDetailsUiState
-import com.example.pizza_shift_intensive.presentation.viewmodel.PizzaViewModel
+import com.example.pizza_shift_intensive.presentation.viewmodel.pizzadetails.PizzaDetailsUiState
+import com.example.pizza_shift_intensive.presentation.viewmodel.pizzadetails.PizzaDetailsViewModel
 
 
 @Composable
 fun PizzaDetailsScreen(
-    pizzaViewModel: PizzaViewModel,
+    pizzaDetailsViewModel: PizzaDetailsViewModel,
     pizzaId: String
 ) {
-    val pizzaDetailsUiState by pizzaViewModel.pizzaDetailsUiState.observeAsState(PizzaDetailsUiState.Loading)
+    val pizzaDetailsUiState by pizzaDetailsViewModel.pizzaDetailsUiState.observeAsState(PizzaDetailsUiState.Loading)
 
     when (val currentState = pizzaDetailsUiState) {
         is PizzaDetailsUiState.Loading -> FullScreenProgressIndicator()
         is PizzaDetailsUiState.Error -> ErrorMessage(
             message = currentState.message,
-            onRetry = { pizzaViewModel.getPizzaDetails(pizzaId) }
+            onRetry = { pizzaDetailsViewModel.getPizzaDetails(pizzaId) }
         )
 
         is PizzaDetailsUiState.Content -> {
