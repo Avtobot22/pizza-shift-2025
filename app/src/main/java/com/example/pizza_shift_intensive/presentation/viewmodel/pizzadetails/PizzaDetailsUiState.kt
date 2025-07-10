@@ -7,5 +7,5 @@ sealed interface PizzaDetailsUiState{
 
     data class Error(val message: String) : PizzaDetailsUiState
 
-    data class Content(val pizzaDetails: PizzaDetailsUiModel) : PizzaDetailsUiState
+    data class Content(val pizzaDetails: PizzaDetailsUiModel, val isToppingsExpanded: Boolean) : PizzaDetailsUiState
 }

@@ -1,16 +1,17 @@
 package com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -31,7 +32,6 @@ import com.example.pizza_shift_intensive.presentation.model.SizesUiModel
 import com.example.pizza_shift_intensive.presentation.ui.components.ErrorMessage
 import com.example.pizza_shift_intensive.presentation.ui.components.FullScreenProgressIndicator
 import com.example.pizza_shift_intensive.presentation.ui.components.ItemImage
-import com.example.pizza_shift_intensive.presentation.ui.components.Title
 import com.example.pizza_shift_intensive.presentation.viewmodel.pizzadetails.PizzaDetailsUiState
 import com.example.pizza_shift_intensive.presentation.viewmodel.pizzadetails.PizzaDetailsViewModel
 
@@ -60,7 +60,14 @@ fun PizzaDetailsScreen(
                         selectedSize
                     )
                 },
-                onToppingSelected = { TODO("Добавление топпинга в заказ")}
+                onToppingSelected = { selectedTopping ->
+                    pizzaDetailsViewModel.setSelectedTopping(selectedTopping = selectedTopping)
+                },
+                isToppingsExpanded = currentState.isToppingsExpanded,
+                onToppingExpandedChanged = { isExpanded ->
+                    pizzaDetailsViewModel.setToppingsExpanded(isExpanded = isExpanded)
+                },
+                onAddToCart = { TODO() }
             )
         }
     }
@@ -71,37 +78,107 @@ fun PizzaDetailsScreen(
 private fun PizzaDetailsContent(
     pizza: PizzaDetailsUiModel,
     onSizeSelected: (SizesUiModel) -> Unit,
-    onToppingSelected: (ComponentUiModel) -> Unit
+    onToppingSelected: (ComponentUiModel) -> Unit,
+    isToppingsExpanded: Boolean,
+    onToppingExpandedChanged: (Boolean) -> Unit,
+    onAddToCart: (PizzaDetailsUiModel) -> Unit
 ) {
-    Title(modifier = Modifier.padding(bottom = 16.dp))
 
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
     ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)
+                .padding(bottom = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                ItemImage(pizza.img, size = 120.dp)
+                PizzaName(pizza)
+                PizzaInfo(pizza)
+                PizzaComposition(pizza)
+                PizzaSize(pizza, onSizeSelected)
+                Text(
+                    "Добавить по вкусу",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp, horizontal = 8.dp)
+                )
+            }
 
-        ItemImage(pizza.img, size = 160.dp)
+            if (isToppingsExpanded) {
+                items(pizza.toppings.chunked(3)) { rowItems ->
+                    ToppingsRow(rowItems, pizza, onToppingSelected)
+                }
+                item {
+                    TextButton(
+                        onClick = { onToppingExpandedChanged(false) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Свернуть")
+                    }
+                }
+            } else {
+                pizza.toppings.take(3).chunked(3).forEach { rowItems ->
+                    item {
+                        ToppingsRow(rowItems, pizza, onToppingSelected)
+                    }
+                }
+                if (pizza.toppings.size > 3) {
+                    item {
+                        TextButton(
+                            onClick = { onToppingExpandedChanged(true) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Показать все")
+                        }
+                    }
+                }
+            }
+        }
 
-        PizzaName(pizza)
-
-        PizzaInfo(pizza)
-
-        PizzaComposition(pizza)
-
-        PizzaSize(pizza, onSizeSelected)
-
-        PizzaToppings(
-            pizzaToppings = pizza.toppings,
-            onToppingSelected = onToppingSelected,
-            )
-
+        Cart(
+            pizza = pizza,
+            onAddToCart = { onAddToCart(pizza) },
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
 @Composable
-private fun ColumnScope.PizzaSize(
+private fun ToppingsRow(
+    rowItems: List<ComponentUiModel>,
+    pizza: PizzaDetailsUiModel,
+    onToppingSelected: (ComponentUiModel) -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(bottom = 8.dp)
+    ) {
+        rowItems.forEach { topping ->
+            Box(modifier = Modifier.weight(1f)) {
+                val isSelected = pizza.selectedToppings.contains(topping)
+                Topping(
+                    pizzaTopping = topping,
+                    onToppingSelected = onToppingSelected,
+                    isSelected = isSelected
+                )
+            }
+        }
+        repeat(3 - rowItems.size) {
+            Box(modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun PizzaSize(
     pizza: PizzaDetailsUiModel,
     onSizeSelected: (SizesUiModel) -> Unit
 ) {
@@ -110,8 +187,7 @@ private fun ColumnScope.PizzaSize(
         style = MaterialTheme.typography.labelLarge,
         fontWeight = FontWeight.Bold,
         modifier = Modifier
-            .align(Alignment.Start)
-            .padding(bottom = 8.dp)
+            .padding(bottom = 5.dp)
     )
 
     PizzaSizeSelector(pizza, onSizeSelected = onSizeSelected)
@@ -123,17 +199,11 @@ private fun PizzaInfo(pizza: PizzaDetailsUiModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "${pizza.selectedSize.diameter} см, ${pizza.selectedDough.type}",
             style = MaterialTheme.typography.bodyMedium,
-        )
-        Text(
-            text = "${pizza.price} ₽",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold
         )
     }
 }
@@ -145,7 +215,7 @@ private fun PizzaComposition(pizza: PizzaDetailsUiModel) {
         style = MaterialTheme.typography.bodySmall,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(vertical = 8.dp)
     )
 }
 
@@ -154,7 +224,8 @@ private fun PizzaName(pizza: PizzaDetailsUiModel) {
     Text(
         text = pizza.name,
         style = MaterialTheme.typography.headlineMedium,
-        modifier = Modifier.padding(bottom = 16.dp)
+        modifier = Modifier.padding(bottom = 5.dp),
+        fontWeight = FontWeight.ExtraBold
     )
 }
 
@@ -166,7 +237,7 @@ private fun PizzaSizeSelector(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(5.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         pizza.sizes.forEach { size ->
@@ -188,37 +259,19 @@ private fun PizzaSizeSelector(
 }
 
 @Composable
-private fun PizzaToppings(
-    pizzaToppings: List<ComponentUiModel>,
-    onToppingSelected: (ComponentUiModel) -> Unit
+private fun Topping(
+    pizzaTopping: ComponentUiModel,
+    onToppingSelected: (ComponentUiModel) -> Unit,
+    isSelected: Boolean
 ) {
-    Text(
-        "Добавить по вкусу",
-        style = MaterialTheme.typography.bodyMedium,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .padding(vertical = 5.dp, horizontal = 8.dp)
-    )
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(pizzaToppings) { topping ->
-            Topping(pizzaTopping = topping, onToppingSelected = onToppingSelected)
-        }
-    }
-}
-
-@Composable
-private fun Topping(pizzaTopping: ComponentUiModel, onToppingSelected: (ComponentUiModel) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(160.dp)
             .clickable { onToppingSelected(pizzaTopping) },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        border = if (isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -230,12 +283,39 @@ private fun Topping(pizzaTopping: ComponentUiModel, onToppingSelected: (Componen
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
             )
+
             ItemImage(pizzaTopping.img, size = 70.dp)
+
             Text(
                 text = "${pizzaTopping.price} ₽",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
             )
         }
+    }
+}
+
+@Composable
+private fun Cart(
+    pizza: PizzaDetailsUiModel,
+    onAddToCart: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    TextButton(
+        onClick = onAddToCart,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = ButtonDefaults.textButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    ) {
+        Text(
+            text = "+ ${pizza.price} ₽",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold
+        )
     }
 }

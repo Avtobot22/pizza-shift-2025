@@ -24,7 +24,7 @@ import com.example.pizza_shift_intensive.R
 fun Title(modifier: Modifier = Modifier, text: String = stringResource(R.string.default_title)) {
     Text(
         text = text,
-        modifier = modifier.padding(start = 16.dp),
+        modifier = modifier.padding(start = 70.dp, top = 50.dp),
         style = TextStyle(
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = MaterialTheme.typography.headlineLarge.fontSize,
