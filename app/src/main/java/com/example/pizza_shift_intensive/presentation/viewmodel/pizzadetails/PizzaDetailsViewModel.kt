@@ -35,7 +35,10 @@ class PizzaDetailsViewModel(
             when (pizzaDetails) {
                 is PizzaDetailsResult.Success ->
                     _pizzaDetailsUiState.value =
-                        PizzaDetailsUiState.Content(pizzaDetails.pizza.toDetailsUiModel(pizzaDetails.price))
+                        PizzaDetailsUiState.Content(
+                            pizzaDetails.pizza.toDetailsUiModel(pizzaDetails.price),
+                            isToppingsExpanded = false
+                        )
 
                 is PizzaDetailsResult.NotFound ->
                     _pizzaDetailsUiState.value = PizzaDetailsUiState.Error("Пицца не найдена")
@@ -51,10 +54,46 @@ class PizzaDetailsViewModel(
                 selectedSize,
                 currentState.pizzaDetails.selectedToppings,
             )
-            val updatedPizzaDetails = currentState.pizzaDetails.copy(selectedSize = selectedSize, price = totalPrice)
-            _pizzaDetailsUiState.value = PizzaDetailsUiState.Content(updatedPizzaDetails)
+            val updatedPizzaDetails =
+                currentState.pizzaDetails.copy(selectedSize = selectedSize, price = totalPrice)
+            _pizzaDetailsUiState.value = PizzaDetailsUiState.Content(
+                updatedPizzaDetails,
+                isToppingsExpanded = currentState.isToppingsExpanded
+            )
         }
 
+    }
+
+    fun setSelectedTopping(selectedTopping: ComponentUiModel) {
+        val currentState = _pizzaDetailsUiState.value
+        if (currentState is PizzaDetailsUiState.Content) {
+            val selectedToppings =
+                currentState.pizzaDetails.selectedToppings.toMutableList()
+            if (selectedToppings.contains(selectedTopping)) {
+                selectedToppings.remove(selectedTopping)
+            } else {
+                selectedToppings.add(selectedTopping)
+            }
+            val totalPrice = calculatePrice(
+                currentState.pizzaDetails.selectedSize,
+                selectedToppings,
+            )
+            val updatedPizzaDetails = currentState.pizzaDetails.copy(
+                selectedToppings = selectedToppings,
+                price = totalPrice
+            )
+            _pizzaDetailsUiState.value = PizzaDetailsUiState.Content(
+                updatedPizzaDetails,
+                isToppingsExpanded = currentState.isToppingsExpanded
+            )
+        }
+    }
+
+    fun setToppingsExpanded(isExpanded: Boolean) {
+        val currentState = _pizzaDetailsUiState.value
+        if (currentState is PizzaDetailsUiState.Content) {
+            _pizzaDetailsUiState.value = currentState.copy(isToppingsExpanded = isExpanded)
+        }
     }
 
     private fun calculatePrice(
