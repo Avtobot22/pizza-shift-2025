@@ -43,10 +43,9 @@ fun PizzaListScreen(
     }
 }
 
-
 @Composable
 private fun PizzaList(pizzaUiModels: List<PizzaUiModel>, onPizzaClick: (String) -> Unit) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+    LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         items(pizzaUiModels) { pizza ->
             PizzaListItem(pizzaUiModel = pizza, onClick = onPizzaClick)
         }
