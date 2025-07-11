@@ -14,8 +14,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -48,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MyApp(modifier: Modifier = Modifier, pizzaListViewModel: PizzaListViewModel = koinViewModel()) {
     val navigationController = rememberNavController()
-    val selectedTab = rememberSaveable { mutableStateOf(NavigationOption.PIZZAS) }
+    var selectedTab by rememberSaveable { mutableStateOf(NavigationOption.PIZZAS) }
 
     LaunchedEffect(key1 = Unit) {
         pizzaListViewModel.getPizzas()
@@ -56,18 +58,18 @@ fun MyApp(modifier: Modifier = Modifier, pizzaListViewModel: PizzaListViewModel 
             val openedOption =
                 NavigationOption.entries.firstOrNull { destination.hasRoute(it.route) }
             if (openedOption != null) {
-                selectedTab.value = openedOption
+                selectedTab = openedOption
             }
         }
     }
 
     Scaffold(
         modifier = modifier,
-        topBar = { Title() },
+        topBar = { AppTopBar(selectedTab, navController = navigationController) },
         bottomBar = {
             BottomNavigation(
                 navigationOptions = NavigationOption.entries,
-                selectedNavigationOption = selectedTab.value,
+                selectedNavigationOption = selectedTab,
                 onItemClicked = { option ->
                     when (option) {
                         NavigationOption.PIZZAS -> navigationController.openPoppingAllPrevious(
@@ -175,5 +177,27 @@ fun NavController.openPoppingAllPrevious(route: Any) {
     this.navigate(route) {
         popUpTo(graph.startDestinationId)
         launchSingleTop = true
+    }
+}
+
+@Composable
+private fun AppTopBar(selectedTab: NavigationOption, navController: NavController) {
+    when (selectedTab) {
+        NavigationOption.PIZZAS -> Title()
+
+        NavigationOption.CART -> Title(
+            text = stringResource(R.string.bottom_bar_cart),
+            onClick = { navController.navigateUp() }, isShowCancelButton = true
+        )
+
+        NavigationOption.ORDERS -> Title(
+            text = stringResource(R.string.bottom_bar_orders),
+            onClick = { navController.navigateUp() }, isShowCancelButton = true
+        )
+
+        NavigationOption.PROFILE -> Title(
+            text = stringResource(R.string.bottom_bar_profile),
+            onClick = { navController.navigateUp() }, isShowCancelButton = true
+        )
     }
 }

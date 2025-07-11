@@ -10,5 +10,5 @@ enum class NavigationOption(val route: KClass<*>) {
     PIZZAS(PizzaListRoute::class),
     ORDERS(OrdersRoute::class),
     CART(CartRoute::class),
-    PROFILE(ProfileRoute::class);
+    PROFILE(ProfileRoute::class),
 }
