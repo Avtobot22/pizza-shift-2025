@@ -34,9 +34,11 @@ fun PizzaListScreen(
 
     when (val currentState = pizzaListUiState) {
         is PizzaListUiState.Loading -> FullScreenProgressIndicator()
-        is PizzaListUiState.Error -> ErrorMessage(message = currentState.message,
+        is PizzaListUiState.Error -> ErrorMessage(
+            message = currentState.message,
             onRetry = { pizzaListViewModel.getPizzas() }
         )
+
         is PizzaListUiState.Content -> {
             PizzaList(currentState.pizzas, onPizzaClick)
         }
@@ -45,7 +47,11 @@ fun PizzaListScreen(
 
 @Composable
 private fun PizzaList(pizzaUiModels: List<PizzaUiModel>, onPizzaClick: (String) -> Unit) {
-    LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         items(pizzaUiModels) { pizza ->
             PizzaListItem(pizzaUiModel = pizza, onClick = onPizzaClick)
         }
