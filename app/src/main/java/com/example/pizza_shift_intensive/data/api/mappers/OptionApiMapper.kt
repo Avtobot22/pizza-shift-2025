@@ -9,24 +9,21 @@ import com.example.pizza_shift_intensive.domain.model.TypeComponentModel
 import com.example.pizza_shift_intensive.domain.model.TypeDoughModel
 import com.example.pizza_shift_intensive.domain.model.TypeSizeModel
 
-fun ComponentApiModel.toComponentModel(): ComponentModel {
-    return ComponentModel(
+fun ComponentApiModel.toComponentModel() =
+    ComponentModel(
         type = TypeComponentModel.valueOf(type),
         price = price,
         img = formatImageUrl(img)
     )
-}
 
-fun OptionApiModel.toSizeOptionModel(): SizeOptionModel {
-    return SizeOptionModel(
+fun OptionApiModel.toSizeOptionModel() =
+    SizeOptionModel(
         type = TypeSizeModel.valueOf(type),
         price = price,
     )
-}
 
-fun OptionApiModel.toDoughOptionModel(): DoughOptionModel {
-    return DoughOptionModel(
+fun OptionApiModel.toDoughOptionModel() =
+    DoughOptionModel(
         type = TypeDoughModel.valueOf(type),
         price = price,
     )
-}

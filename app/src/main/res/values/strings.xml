@@ -9,4 +9,12 @@
     <string name="bottom_bar_orders">Заказы</string>
     <string name="bottom_bar_cart">"Корзина"</string>
     <string name="bottom_bar_profile">"Профиль"</string>
+    <string name="toppings_title">Добавить по вкусу</string>
+    <string name="hide_all_toppings">Свернуть</string>
+    <string name="show_all_toppings">Показать все</string>
+    <string name="size_title">Выберите размер:</string>
+    <string name="pizza_details_info">%d см, %s</string>
+    <string name="pizza_details_ingredients">Состав: %s</string>
+    <string name="price">%d ₽</string>
+    <string name="cart">+ %d ₽</string>
 </resources>

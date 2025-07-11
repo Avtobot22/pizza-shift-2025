@@ -4,8 +4,8 @@ import com.example.pizza_shift_intensive.domain.model.ComponentModel
 import com.example.pizza_shift_intensive.domain.model.PizzaModel
 import com.example.pizza_shift_intensive.presentation.model.PizzaDetailsUiModel
 
-fun PizzaModel.toDetailsUiModel(price: Int): PizzaDetailsUiModel {
-    return PizzaDetailsUiModel(
+fun PizzaModel.toDetailsUiModel(price: Int) =
+    PizzaDetailsUiModel(
         id = this.id,
         name = this.name,
         description = this.description,
@@ -19,7 +19,7 @@ fun PizzaModel.toDetailsUiModel(price: Int): PizzaDetailsUiModel {
         selectedDough = this.doughs.first().toUiModel(),
         selectedSize = this.sizes.first().toUiModel(),
     )
-}
+
 
 private fun formatterIngredients(ingredients: List<ComponentModel>): String {
     return ingredients.joinToString(separator = ", ") { typeToString(it.type) }

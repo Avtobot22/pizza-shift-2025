@@ -1,5 +1,7 @@
 package com.example.pizza_shift_intensive.presentation.ui.screens.pizzzadetails
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +26,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.pizza_shift_intensive.R
 import com.example.pizza_shift_intensive.presentation.model.ComponentUiModel
 import com.example.pizza_shift_intensive.presentation.model.PizzaDetailsUiModel
 import com.example.pizza_shift_intensive.presentation.model.SizesUiModel
@@ -103,7 +107,7 @@ private fun PizzaDetailsContent(
                 PizzaComposition(pizza)
                 PizzaSize(pizza, onSizeSelected)
                 Text(
-                    "Добавить по вкусу",
+                    stringResource(R.string.toppings_title),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -121,7 +125,7 @@ private fun PizzaDetailsContent(
                         onClick = { onToppingExpandedChanged(false) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Свернуть")
+                        Text(stringResource(R.string.hide_all_toppings))
                     }
                 }
             } else {
@@ -136,7 +140,7 @@ private fun PizzaDetailsContent(
                             onClick = { onToppingExpandedChanged(true) },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Показать все")
+                            Text(stringResource(R.string.show_all_toppings))
                         }
                     }
                 }
@@ -183,7 +187,7 @@ private fun PizzaSize(
     onSizeSelected: (SizesUiModel) -> Unit
 ) {
     Text(
-        text = "Выберите размер:",
+        text = stringResource(R.string.size_title),
         style = MaterialTheme.typography.labelLarge,
         fontWeight = FontWeight.Bold,
         modifier = Modifier
@@ -202,7 +206,11 @@ private fun PizzaInfo(pizza: PizzaDetailsUiModel) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "${pizza.selectedSize.diameter} см, ${pizza.selectedDough.type}",
+            text = stringResource(
+                R.string.pizza_details_info,
+                pizza.selectedSize.diameter,
+                pizza.selectedDough.type
+            ),
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -211,7 +219,7 @@ private fun PizzaInfo(pizza: PizzaDetailsUiModel) {
 @Composable
 private fun PizzaComposition(pizza: PizzaDetailsUiModel) {
     Text(
-        text = "Состав: ${pizza.ingredients}",
+        text = stringResource(R.string.pizza_details_ingredients, pizza.ingredients),
         style = MaterialTheme.typography.bodySmall,
         modifier = Modifier
             .fillMaxWidth()
@@ -264,32 +272,41 @@ private fun Topping(
     onToppingSelected: (ComponentUiModel) -> Unit,
     isSelected: Boolean
 ) {
+    val borderWidth by animateDpAsState(targetValue = if (isSelected) 4.dp else 0.dp)
+    val borderColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(170.dp)
             .clickable { onToppingSelected(pizzaTopping) },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        border = if (isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
+        border = BorderStroke(borderWidth, borderColor)
     ) {
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(8.dp)
+            verticalArrangement = Arrangement.Center
         ) {
+            ItemImage(pizzaTopping.img, size = 70.dp)
+
             Text(
                 text = pizzaTopping.type,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 8.dp)
             )
 
-            ItemImage(pizzaTopping.img, size = 70.dp)
-
             Text(
-                text = "${pizzaTopping.price} ₽",
+                text = stringResource(R.string.price, pizzaTopping.price),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
@@ -313,7 +330,7 @@ private fun Cart(
         )
     ) {
         Text(
-            text = "+ ${pizza.price} ₽",
+            text = stringResource(R.string.cart, pizza.price),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold
         )

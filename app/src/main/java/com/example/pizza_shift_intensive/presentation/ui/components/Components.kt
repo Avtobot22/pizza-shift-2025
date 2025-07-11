@@ -72,7 +72,7 @@ fun FullScreenProgressIndicator(modifier: Modifier = Modifier) {
 @Composable
 fun ErrorMessage(
     message: String = stringResource(R.string.error_unknown),
-    onRetry : () -> Unit
+    onRetry: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = {},
