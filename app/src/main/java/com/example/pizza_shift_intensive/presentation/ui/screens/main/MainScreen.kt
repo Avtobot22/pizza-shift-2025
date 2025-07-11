@@ -53,7 +53,8 @@ fun MyApp(modifier: Modifier = Modifier, pizzaListViewModel: PizzaListViewModel 
     LaunchedEffect(key1 = Unit) {
         pizzaListViewModel.getPizzas()
         navigationController.addOnDestinationChangedListener { _, destination, _ ->
-            val openedOption = NavigationOption.entries.firstOrNull { destination.hasRoute(it.route) }
+            val openedOption =
+                NavigationOption.entries.firstOrNull { destination.hasRoute(it.route) }
             if (openedOption != null) {
                 selectedTab.value = openedOption
             }
@@ -69,10 +70,21 @@ fun MyApp(modifier: Modifier = Modifier, pizzaListViewModel: PizzaListViewModel 
                 selectedNavigationOption = selectedTab.value,
                 onItemClicked = { option ->
                     when (option) {
-                        NavigationOption.PIZZAS -> navigationController.openPoppingAllPrevious(PizzaListRoute)
-                        NavigationOption.ORDERS -> navigationController.openPoppingAllPrevious(OrdersRoute)
-                        NavigationOption.CART -> navigationController.openPoppingAllPrevious(CartRoute)
-                        NavigationOption.PROFILE -> navigationController.openPoppingAllPrevious(ProfileRoute)
+                        NavigationOption.PIZZAS -> navigationController.openPoppingAllPrevious(
+                            PizzaListRoute
+                        )
+
+                        NavigationOption.ORDERS -> navigationController.openPoppingAllPrevious(
+                            OrdersRoute
+                        )
+
+                        NavigationOption.CART -> navigationController.openPoppingAllPrevious(
+                            CartRoute
+                        )
+
+                        NavigationOption.PROFILE -> navigationController.openPoppingAllPrevious(
+                            ProfileRoute
+                        )
                     }
                 }
             )

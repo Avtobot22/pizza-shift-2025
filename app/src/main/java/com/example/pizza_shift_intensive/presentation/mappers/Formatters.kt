@@ -27,28 +27,27 @@ fun typeToString(type: TypeComponentModel): String {
     }
 }
 
-fun typeToString(type: TypeDoughModel): String {
-    return when (type) {
+fun typeToString(type: TypeDoughModel) =
+    when (type) {
         TypeDoughModel.THIN -> "тонкое"
         TypeDoughModel.THICK -> "традиционное"
     }
-}
 
-fun typeToString(type: TypeSizeModel): String {
-    return when (type) {
+
+fun typeToString(type: TypeSizeModel) =
+    when (type) {
         TypeSizeModel.SMALL -> "маленькая"
         TypeSizeModel.MEDIUM -> "средняя"
         TypeSizeModel.LARGE -> "большая"
     }
-}
 
-fun formatDiameter(type: TypeSizeModel): Int {
-    return when (type) {
+
+fun formatDiameter(type: TypeSizeModel) =
+    when (type) {
         TypeSizeModel.SMALL -> 25
         TypeSizeModel.MEDIUM -> 30
         TypeSizeModel.LARGE -> 35
     }
-}
-fun formatFirstLetter(text: String): String {
-    return text.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-}
+
+fun formatFirstLetter(text: String) =
+    text.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }

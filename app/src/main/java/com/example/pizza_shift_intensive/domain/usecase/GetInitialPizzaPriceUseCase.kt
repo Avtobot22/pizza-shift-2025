@@ -7,6 +7,6 @@ class GetInitialPizzaPriceUseCase(
 ) {
 
     operator fun invoke(pizza: PizzaModel): Int {
-    return strategies.firstNotNullOfOrNull { it.findInitialPrice(pizza) }?: 0
+        return strategies.firstNotNullOfOrNull { it.findInitialPrice(pizza) } ?: 0
     }
 }
