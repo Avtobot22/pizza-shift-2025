@@ -68,8 +68,8 @@ fun MyApp(modifier: Modifier = Modifier, pizzaListViewModel: PizzaListViewModel 
         topBar = { AppTopBar(selectedTab, navController = navigationController) },
         bottomBar = {
             BottomNavigation(
-                navigationOptions = NavigationOption.entries,
-                selectedNavigationOption = selectedTab,
+                bottomNavigationOptions = bottomNavigationOptions(),
+                selectedBottomNavigationOption = selectedTab,
                 onItemClicked = { option ->
                     when (option) {
                         NavigationOption.PIZZAS -> navigationController.openPoppingAllPrevious(
@@ -87,6 +87,8 @@ fun MyApp(modifier: Modifier = Modifier, pizzaListViewModel: PizzaListViewModel 
                         NavigationOption.PROFILE -> navigationController.openPoppingAllPrevious(
                             ProfileRoute
                         )
+
+                        else -> {}
                     }
                 }
             )
@@ -126,6 +128,10 @@ fun MyApp(modifier: Modifier = Modifier, pizzaListViewModel: PizzaListViewModel 
     }
 }
 
+@Composable
+private fun bottomNavigationOptions(): List<NavigationOption> =
+    NavigationOption.entries.filter { it != NavigationOption.DETAILS }
+
 inline fun <reified T : Any> NavGraphBuilder.animatedComposable(noinline block: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit) {
     composable<T>(
         enterTransition = ENTER_TRANSITION,
@@ -139,14 +145,14 @@ inline fun <reified T : Any> NavGraphBuilder.animatedComposable(noinline block: 
 
 @Composable
 private fun BottomNavigation(
-    navigationOptions: List<NavigationOption>,
-    selectedNavigationOption: NavigationOption,
+    bottomNavigationOptions: List<NavigationOption>,
+    selectedBottomNavigationOption: NavigationOption,
     onItemClicked: (NavigationOption) -> Unit,
 ) {
     NavigationBar {
-        for (option in navigationOptions) {
+        for (option in bottomNavigationOptions) {
             NavigationBarItem(
-                selected = selectedNavigationOption == option,
+                selected = selectedBottomNavigationOption == option,
                 onClick = { onItemClicked(option) },
                 icon = { Icon(getIcon(option), "") },
                 label = { Text(text = getLabel(option)) }
@@ -161,6 +167,7 @@ private fun getIcon(option: NavigationOption): ImageVector =
         NavigationOption.ORDERS -> Icons.Default.Menu
         NavigationOption.CART -> Icons.Default.ShoppingCart
         NavigationOption.PROFILE -> Icons.Default.AccountCircle
+        NavigationOption.DETAILS -> Icons.Default.Add // Placeholder, as this option is not used in the bottom navigation
     }
 
 @Composable
@@ -170,6 +177,7 @@ private fun getLabel(option: NavigationOption): String = stringResource(
         NavigationOption.ORDERS -> R.string.bottom_bar_orders
         NavigationOption.PROFILE -> R.string.bottom_bar_profile
         NavigationOption.CART -> R.string.bottom_bar_cart
+        NavigationOption.DETAILS -> R.string.default_title // Placeholder, as this option is not used in the bottom navigation
     }
 )
 
@@ -184,6 +192,10 @@ fun NavController.openPoppingAllPrevious(route: Any) {
 private fun AppTopBar(selectedTab: NavigationOption, navController: NavController) {
     when (selectedTab) {
         NavigationOption.PIZZAS -> Title()
+
+        NavigationOption.DETAILS -> Title(
+            onClick = { navController.navigateUp() }, isShowCancelButton = true
+        )
 
         NavigationOption.CART -> Title(
             text = stringResource(R.string.bottom_bar_cart),
